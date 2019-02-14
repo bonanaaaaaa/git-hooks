@@ -12,6 +12,7 @@ if !!regex.match(branch) then
   content = File.read(commit_msg_filepath)
   msg = "[#{task}]#{content}"
   f = File.open(commit_msg_filepath, "w")
+  f.puts msg
   f.close
   exit 0
 else
