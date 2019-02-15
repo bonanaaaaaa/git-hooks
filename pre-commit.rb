@@ -13,9 +13,11 @@ cmd = "mix format --check-formatted"
 
 result = system cmd
 
-if result == false then
+if !result then
   puts "formatted"
-  exec "mix format"
-end
+  system "mix format"
 
-exit 0
+  exit 1
+else
+  exit 0
+end
