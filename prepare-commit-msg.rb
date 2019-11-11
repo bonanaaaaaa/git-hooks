@@ -4,17 +4,29 @@ commit_msg_filepath = ARGV[0]
 
 branch = `git symbolic-ref --short HEAD`.strip
 
-regex = /(T[\d]+).*/
+branch_regex = /([\w\d]+).*/
+content_regex = /^\[(?:[T\d+]|[\w\d]+)\]\[[\w\&]+\]\s[^\[\]]+$/
+content_with_name_regex = /^\[[\w\&]+\]\s[^\[\]]+$/
 
-if !!regex.match(branch) then
-  task = regex.match(branch)[1]
+name = "Bonn"
+
+if !!branch_regex.match(branch) then
+  task = branch_regex.match(branch)[1]
 
   content = File.read(commit_msg_filepath)
-  msg = "[#{task}]#{content}"
+
+  msg = if !!content_regex.match(content) then
+    content
+  elsif !!content_with_name_regex.match(content) then
+    "[#{task}]#{content}"
+  else
+    "[#{task}][#{name}] #{content}"
+  end
+
   f = File.open(commit_msg_filepath, "w")
   f.puts msg
   f.close
   exit 0
 else
-  exit 1
+  exit 0
 end
